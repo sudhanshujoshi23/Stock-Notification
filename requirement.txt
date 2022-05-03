@@ -1,0 +1,6 @@
+nsepy
+nsetools
+numpy
+pandas
+matplotlib
+influxdb-client
