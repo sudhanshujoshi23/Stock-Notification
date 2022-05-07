@@ -4,3 +4,4 @@ influxdbv2
 *.ipynb_checkpoints
 .env
 thought-process.txt
+*.csv
