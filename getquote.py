@@ -1,24 +1,19 @@
-import os
 import nsepy as nse
 import pandas as pd
-import matplotlib.pyplot as plt
-import datetime
-from dotenv import load_dotenv
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client.write_api import SYNCHRONOUS
+import utils
 
-load_dotenv()
-token = os.getenv('DB_TOKEN')
-host = os.getenv('DB_HOST')
-org = os.getenv('DB_ORG')
-bucket = os.getenv('DB_BUCKET')
+# Using the list of 50 companies present in Nifty50
+list_nse_50_url = 'https://www1.nseindia.com/content/indices/ind_nifty50list.csv'
+df1 = pd.read_csv(list_nse_50_url)
 
-client = InfluxDBClient(url=host, token=token)
-print(client.health())
+# Fetching data from NSEPY and writing it to a dataframe
+stock_data = pd.DataFrame()
+for stock in df1['Symbol'].tolist():
+    stock_info = []
+    stock_info = nse.get_history(stock, start=datetime.today() - relativedelta(days=30), end=datetime.today())
+    stock_data = stock_data.append(stock_info, sort=False)
 
-write_api = client.write_api(write_options=SYNCHRONOUS)
-
-data = ["INFY,stock=INFY Open=1554,High=1575,Low=1534"]
-write_api.write(bucket, org, data)
-
+line = utils.make_line_protocol(stock_data)
+utils.push_to_influxdb(line)
