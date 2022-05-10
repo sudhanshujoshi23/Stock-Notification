@@ -10,6 +10,8 @@ token = os.getenv('DB_TOKEN')
 host = os.getenv('DB_HOST')
 org = os.getenv('DB_ORG')
 bucket = os.getenv('DB_BUCKET')
+tg_token = os.getenv('TElEGRAM_TOKEN')
+tg_channel = os.getenv('TELEGRAM_CHANNEL')
 
 # Function to make the line protocol for posting stock data to influxDB
 def make_line_protocol(df1):
@@ -62,11 +64,11 @@ def push_to_influxdb(data):
 # Function to push data to telegram channel.
 def push_to_telegram(data):
     query_params = {
-                    'chat_id': '@botnify',
+                    'chat_id': f'{tg_channel}',
                     'text': f'{data}'
                     }
 
     response = requests.get(
-        url = "https://api.telegram.org/bot5306794126:AAHwbtgRCl-u4MFEbOxZAzH5KSLf0x6prM4/sendMessage",
+        url = f"https://api.telegram.org/bot{tg_token}/sendMessage",
         params = query_params, 
     )
