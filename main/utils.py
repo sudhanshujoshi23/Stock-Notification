@@ -1,17 +1,13 @@
 import os
 from urllib.error import HTTPError
 import requests
-from dotenv import load_dotenv
 from datetime import datetime
-
-# Load environment variables
+from dotenv import load_dotenv
 load_dotenv()
-token = os.getenv('DB_TOKEN')
-host = os.getenv('DB_HOST')
-org = os.getenv('DB_ORG')
-bucket = os.getenv('DB_BUCKET')
-tg_token = os.getenv('TElEGRAM_TOKEN')
-tg_channel = os.getenv('TELEGRAM_CHANNEL')
+
+# Function to get the expiry date of the current month
+def get_expiry_date(currentDate):
+    pass
 
 # Function to make the line protocol for posting stock data to influxDB
 def make_line_protocol(df1):
@@ -46,15 +42,15 @@ def push_to_influxdb(data):
     for line in data:
         try:
             response = requests.post(
-                url=f"{host}/api/v2/write",
+                url=f"{os.environ['DB_HOST']}/api/v2/write",
                 data=line,
                 params={
-                    'bucket': bucket,
-                    'org': org,
+                    'bucket': os.environ['DB_BUCKET'],
+                    'org': os.environ['DB_ORG'],
                     'precision': 's',
                     },
                 headers={
-                    'Authorization': f'Token {token}',
+                    'Authorization': f'Token {os.environ["DB_TOKEN"]}',
                     'Content-Type' : 'text/plain'
                 }
             )
@@ -64,11 +60,11 @@ def push_to_influxdb(data):
 # Function to push data to telegram channel.
 def push_to_telegram(data):
     query_params = {
-                    'chat_id': f'{tg_channel}',
+                    'chat_id': f'{os.environ["TELEGRAM_CHANNEL"]}',
                     'text': f'{data}'
                     }
 
     response = requests.get(
-        url = f"https://api.telegram.org/bot{tg_token}/sendMessage",
+        url = f"https://api.telegram.org/bot{os.environ['TElEGRAM_TOKEN']}/sendMessage",
         params = query_params, 
     )

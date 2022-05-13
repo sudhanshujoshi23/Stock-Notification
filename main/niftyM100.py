@@ -19,7 +19,7 @@ Nifty_MidCap_100PE = nse.get_index_pe_history(symbol='NIFTY MIDCAP 100',
 Nifty_MidCap = pd.concat([NiftyM100, Nifty_MidCap_100PE], axis=1, join='inner')
 
 # Prepare line protocol string and send to InfluxDB
-line = utils.make_line_protocol_index(Nifty_MidCap, 'Nifty')
+line = utils.make_line_protocol_index(Nifty_MidCap, 'Nifty Midcap')
 utils.push_to_influxdb(line)
 
 # Prepare data to be sent to telegram

@@ -12,7 +12,7 @@ df1 = pd.read_csv(list_nse_50_url)
 stock_data = pd.DataFrame()
 for stock in df1['Symbol'].tolist():
     stock_info = []
-    stock_info = nse.get_history(stock, start=datetime.today() - relativedelta(days=30), end=datetime.today())
+    stock_info = nse.get_history(stock, start=datetime.today() - relativedelta(days=100), end=datetime.today())
     stock_data = stock_data.append(stock_info, sort=False)
 
 line = utils.make_line_protocol(stock_data)
